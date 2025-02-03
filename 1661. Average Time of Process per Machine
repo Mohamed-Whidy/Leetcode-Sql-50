@@ -1,0 +1,28 @@
+/* Write your T-SQL query statement below */
+
+with processEndTime
+as
+(
+    select machine_id, process_id, timestamp as endTime
+    from activity
+    where activity_type = 'end'
+),
+processStartTime
+as
+(
+    select machine_id, process_id, timestamp as startTime
+    from activity
+    where activity_type = 'start'
+)
+select et.machine_id, ROUND(AVG(endTime-startTime),3) as processing_time 
+from processEndTime et
+join processStartTime st
+on et.process_id = st.process_id and et.machine_id = st.machine_id
+group by et.machine_id
+
+
+-- select et.machine_id, ROUND(AVG(et.timestamp - st.timestamp ),3) as processing_time 
+-- from activity et
+-- join activity st
+-- on et.process_id = st.process_id and et.machine_id = st.machine_id and et.activity_type = 'end' and st.activity_type = 'start'
+-- group by et.machine_id
