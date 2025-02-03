@@ -1,0 +1,22 @@
+/* Write your T-SQL query statement below */
+
+select e.name
+from employee e
+join employee m
+on e.id = m.managerid
+group by e.id, e.name
+having count(m.managerid) >=5
+
+
+-- with managerCount
+-- as
+-- (
+--     select e.id, e.name, count(m.managerid) as manageEmps
+--     from employee e
+--     join employee m
+--     on e.id = m.managerid
+--     group by e.id, e.name
+--     having count(m.managerid) >=5
+-- )
+-- select name from managerCount
+-- where manageEmps >= 5
