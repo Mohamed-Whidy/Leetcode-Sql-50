@@ -1,0 +1,32 @@
+
+with totalSigns
+as
+( 
+    select s.user_id, count(c.user_id)as total 
+    from Signups s
+    left join Confirmations c
+    on s.user_id = c.user_id
+    group by  s.user_id
+),
+confirmSigns
+as
+(
+    select s.user_id, count(c.user_id) as confirmed
+    from Signups s
+    join Confirmations c
+    on s.user_id = c.user_id
+    where c.action = 'confirmed' 
+    group by s.user_id
+)  
+select ts.user_id, round(isnull(cs.confirmed*1.0 / ts.total, 0), 2) as confirmation_rate 
+from totalSigns ts
+left join confirmSigns cs
+on ts.user_id = cs.user_id
+
+
+-- select s.user_id ,
+-- ROUND(ISNULL(SUM(CASE When c.action = 'confirmed' THEN 1.0 ELSE 0.0 END) / NULLIF(count(c.user_id),0), 0), 2) as confirmation_rate
+-- from Signups s
+-- left join Confirmations c
+-- on s.user_id = c.user_id 
+-- group by s.user_id
