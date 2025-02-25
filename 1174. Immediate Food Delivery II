@@ -1,0 +1,17 @@
+/* Write your T-SQL query statement below */
+WITH RankedOrders AS (
+    SELECT *, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS rn
+    FROM Delivery
+), FirstOrders AS (
+    SELECT delivery_id, customer_id, order_date, customer_pref_delivery_date
+    FROM RankedOrders
+    WHERE rn = 1
+), ImmediateFirstOrders AS (
+    SELECT delivery_id, customer_id, order_date, customer_pref_delivery_date
+    FROM FirstOrders
+    WHERE order_date = customer_pref_delivery_date
+)
+SELECT round(count(i.customer_id)*100.0/count(f.customer_id), 2) as immediate_percentage
+FROM FirstOrders f
+left join ImmediateFirstOrders i
+on f.customer_id = i.customer_id
