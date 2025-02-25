@@ -1,0 +1,19 @@
+/* Write your T-SQL query statement below */
+with quality as
+(
+    select query_name, count(query_name) as total_query_name, round(avg(rating*1.0/position), 2) as quality              
+    from queries
+    group by query_name
+),
+poor_query
+as
+(
+    select query_name, count(query_name) as poorQuery
+    from queries
+    where rating < 3
+    group by query_name
+)
+select quality.query_name, quality, coalesce(round(poorQuery*1.0/total_query_name*100, 2), 0) as poor_query_percentage
+from quality
+left join poor_query
+on quality.query_name = poor_query.query_name
