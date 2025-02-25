@@ -1,0 +1,17 @@
+/* Write your T-SQL query statement below */
+with distinctUsers as(
+    SELECT COUNT(DISTINCT player_id) AS all_users 
+    FROM Activity 
+), firstLogin as (
+    SELECT player_id,MIN(event_date) AS first_log
+    FROM Activity 
+    GROUP BY player_id
+), loggedBack as (
+    select count(*) as back_log
+    from firstLogin fl
+    join Activity a
+    on fl.player_id = a.player_id 
+    where DATEADD(day, 1, fl.first_log) = a.event_date
+)
+SELECT ROUND(back_log*1.0/(select * from distinctUsers),  2) AS fraction  
+FROM loggedBack
