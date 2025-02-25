@@ -1,0 +1,15 @@
+/* Write your T-SQL query statement below */
+with all_users
+as
+(
+    select count(*) as allUsers from users
+),
+contest_users
+as
+(
+    select contest_id, count(contest_id) as contestUsers from register
+    group by contest_id
+)
+select contest_id, round( (contestUsers*1.0/allUsers*1.0)*100, 2) as percentage
+from all_users, contest_users 
+order by percentage desc, contest_id
