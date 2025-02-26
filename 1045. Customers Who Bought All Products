@@ -1,0 +1,14 @@
+/* Write your T-SQL query statement below */
+with AllProducts as 
+(
+    select count(product_key) as products_count
+    from product
+), CustomerProducts as
+(
+    select customer_id, count(distinct product_key) as customer_products
+    from customer 
+    group by customer_id
+)
+select customer_id
+from CustomerProducts
+where customer_products = (select products_count from AllProducts)
