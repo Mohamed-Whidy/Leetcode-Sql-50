@@ -1,0 +1,25 @@
+/* Write your T-SQL query statement below */
+with userMostRated as
+(
+    select top 1 u.name, count(mr.user_id) userCount
+    from movierating mr
+    join users u
+    on mr.user_id = u.user_id
+    group by  u.name
+    order by count(mr.user_id) desc, u.name
+),
+topMovieRating as
+(
+    select top 1 m.title, round(avg(rating*1.0),2) avgRating
+    from movierating rm
+    join movies m
+    on rm.movie_id = m.movie_id
+    where rm.created_at between '2020-02-01' and '2020-02-28'
+    group by m.title
+    order by round(avg(rating*1.0),2) desc, m.title
+)
+select name as results
+from userMostRated
+union all
+select title as results
+from topMovieRating
