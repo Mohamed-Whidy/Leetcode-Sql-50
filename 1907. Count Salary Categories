@@ -1,0 +1,27 @@
+/* Write your T-SQL query statement below */
+with lowSalary as
+(
+    select count(account_id) as accounts_count 
+    from accounts 
+    where income < 20000            
+),
+avgSalary as
+(
+    select count(account_id) as accounts_count  
+    from accounts 
+    where income >= 20000 and income <= 50000 
+),
+HighSalary as
+(
+    select count(account_id) as accounts_count  
+    from accounts 
+    where income > 50000  
+)
+select 'Low Salary' as category, accounts_count 
+from lowSalary
+union all
+select 'Average Salary' as category, accounts_count 
+from avgSalary
+union all
+select 'High Salary' as category, accounts_count 
+from HighSalary
