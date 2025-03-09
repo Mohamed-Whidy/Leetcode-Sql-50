@@ -1,0 +1,13 @@
+/* Write your T-SQL query statement below */
+with cte as
+(
+    select visited_on,
+       round(sum(sum(amount)) over(order by visited_on rows between 6 preceding and current row), 2) as amount,
+       round(avg(sum(amount*1.0)) over(order by visited_on rows between 6 preceding and current row), 2) average_amount,
+       row_number() over(order by visited_on) as id
+    from customer
+    group by visited_on
+)
+select visited_on, amount, average_amount
+from cte
+where id >= 7
