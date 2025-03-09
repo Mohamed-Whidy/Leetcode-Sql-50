@@ -1,0 +1,12 @@
+/* Write your T-SQL query statement below */
+with rankedSslaries as
+(
+    select d.name department, e.name employee, e.salary, 
+        dense_rank() over (partition by d.name order by e.salary desc) as drank
+    from employee e
+    join department d
+    on e.departmentid = d.id
+)
+select department, employee, salary
+from rankedSslaries
+where drank <= 3
