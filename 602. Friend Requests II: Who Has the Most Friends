@@ -1,0 +1,18 @@
+/* Write your T-SQL query statement below */
+with Friends as
+(
+    select accepter_id as id
+    from RequestAccepted 
+    union all
+    select requester_id as id
+    from RequestAccepted
+),
+friendsCount as
+(
+    select id, count(id) as num
+    from Friends
+    group by id 
+)
+select top 1 *
+from friendsCount 
+order by num desc
