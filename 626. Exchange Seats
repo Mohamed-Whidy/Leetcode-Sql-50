@@ -1,0 +1,12 @@
+/* Write your T-SQL query statement below */
+with mySwap as
+(
+    select Id, student, 
+           case when row_number() over (order by id) % 2 = 1 and lead(student) over (order by Id) is null then student
+                when row_number() over (order by id) % 2 = 1 then lead(student) over (order by Id)
+                when row_number() over (order by id) % 2 = 0 then lag(student) over (order by Id)
+                end as student2
+    from seat
+)    
+select id, student2 as student
+ from mySwap
